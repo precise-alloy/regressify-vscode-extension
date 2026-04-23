@@ -1,0 +1,42 @@
+name: Publish to Azure DevOps Marketplace
+
+on:
+  push:
+    branches:
+      - release
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish Epi CLI extension to Azure DevOps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        timeout-minutes: 1
+        with:
+          node-version: '22'
+
+      - name: Install vsce
+        timeout-minutes: 2
+        run: |
+          npm install -g vsce
+
+      - name: Install node_modules
+        timeout-minutes: 1
+        run: npm ci
+
+      - name: Publish Extension to Visual Studio Marketplace
+        timeout-minutes: 1
+        env:
+          AZURE_DEVOPS_EXT_PAT: ${{ secrets.AZURE_DEVOPS_EXT_PAT }}
+        run: |
+          vsce publish --pat $AZURE_DEVOPS_EXT_PAT --allow-missing-repository

@@ -1,0 +1,163 @@
+{
+  "name": "regressify",
+  "displayName": "Regressify",
+  "description": "Visual Automation Test Tool",
+  "version": "0.0.32",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "publisher": "tuyen",
+  "categories": [
+    "Other"
+  ],
+  "license": "ISC",
+  "activationEvents": [
+    "workspaceContains:visual_tests/*.tests.yaml",
+    "workspaceContains:visual_tests/*.tests.yml",
+    "workspaceContains:visual_tests/*.tests.json"
+  ],
+  "icon": "assets/logo.png",
+  "main": "./dist/extension.js",
+  "galleryBanner": {
+    "color": "#ffe04b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/precise-alloy/regression-test.git"
+  },
+  "author": "tuyen-at-work",
+  "contributes": {
+    "commands": [
+      {
+        "command": "regressify.helloWorld",
+        "title": "✅ Regressify - 0. Hello World"
+      },
+      {
+        "command": "regressify.open",
+        "title": "✅ Regressify - 1. Open"
+      },
+      {
+        "command": "regressify.reference",
+        "title": "✅ Regressify - 2. Reference"
+      },
+      {
+        "command": "regressify.approve",
+        "title": "✅ Regressify - 3. Approve"
+      },
+      {
+        "command": "regressify.runTest",
+        "title": "✅ Regressify - 4. Run Test"
+      },
+      {
+        "command": "regressify.test",
+        "title": "✅ Regressify - 4. Test"
+      },
+      {
+        "command": "regressify.viewReport",
+        "title": "✅ Regressify - 5. View Report"
+      },
+      {
+        "command": "regressify.refreshVisualTests",
+        "title": "✅ Regressify - 6. Refresh"
+      },
+      {
+        "command": "regressify.updateLibrary",
+        "title": "✅ Regressify - 7. Update Library"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "regressify.open",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.reference",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.approve",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.test",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.viewReport",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.updateLibrary",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "regressify.reference",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.approve",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.test",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.viewReport",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "regressify.updateLibrary",
+          "when": "resourceFilename =~ /.tests\\.(yaml|yml|json)$/ && resourceDirname =~ /visual_tests/",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "regressifyExplorer",
+          "name": "Regressify"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.12",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "eslint": "^9.18.0",
+    "typescript": "^5.7.3",
+    "ts-loader": "^9.5.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
