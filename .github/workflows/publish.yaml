@@ -16,11 +16,11 @@ jobs:
     name: Publish Epi CLI extension to Azure DevOps
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         timeout-minutes: 5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         timeout-minutes: 1
         with:
           node-version: '22'
