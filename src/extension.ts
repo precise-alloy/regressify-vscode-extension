@@ -6,6 +6,23 @@ import { getTestSuiteReportPath, getTestSuiteName } from './regressify-helpers';
 import { executeRegressifyCommand } from './exec-command';
 import { fileSystemWatcher } from './file-system-watcher';
 
+function registerConfirmedCommand<Arguments extends unknown[]>(
+  command: string,
+  handler: (...args: Arguments) => unknown
+): vscode.Disposable {
+  return vscode.commands.registerCommand(command, async (...args: Arguments) => {
+    const confirmation = await vscode.window.showWarningMessage(
+      'We recommend using the native desktop version of Regressify instead of this VS Code extension. Confirm to continue with this command.',
+      { modal: true },
+      'Confirm'
+    );
+
+    if (confirmation === 'Confirm') {
+      return handler(...args);
+    }
+  });
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -20,37 +37,41 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('regressifyExplorer', regressifyProvider);
 
   // Add refresh command for the TreeDataProvider
-  const refreshCommand = vscode.commands.registerCommand('extension.refreshVisualTests', () => {
+  const refreshCommand = registerConfirmedCommand('regressify.refreshVisualTests', () => {
+    regressifyProvider.refresh();
+  });
+
+  const legacyRefreshCommand = registerConfirmedCommand('extension.refreshVisualTests', () => {
     regressifyProvider.refresh();
   });
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  const helloWorldCommand = vscode.commands.registerCommand('regressify.helloWorld', () => {
+  const helloWorldCommand = registerConfirmedCommand('regressify.helloWorld', () => {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
     vscode.window.showInformationMessage('Hello World from Regressify!');
   });
 
-  const openCommand = vscode.commands.registerCommand('regressify.open', (uri: vscode.Uri) => {
+  const openCommand = registerConfirmedCommand('regressify.open', (uri: vscode.Uri) => {
     // Open the file in the editor
     vscode.window.showTextDocument(uri);
   });
 
-  const referenceCommand = vscode.commands.registerCommand('regressify.reference', (uri: vscode.Uri) => {
+  const referenceCommand = registerConfirmedCommand('regressify.reference', (uri: vscode.Uri) => {
     executeRegressifyCommand('ref', uri);
   });
 
-  const approveCommand = vscode.commands.registerCommand('regressify.approve', (uri: vscode.Uri) => {
+  const approveCommand = registerConfirmedCommand('regressify.approve', (uri: vscode.Uri) => {
     executeRegressifyCommand('approve', uri);
   });
 
-  const testCommand = vscode.commands.registerCommand('regressify.test', (uri: vscode.Uri) => {
+  const testCommand = registerConfirmedCommand('regressify.test', (uri: vscode.Uri) => {
     executeRegressifyCommand('test', uri);
   });
 
-  const updateCommand = vscode.commands.registerCommand('regressify.updateLibrary', () => {
+  const updateCommand = registerConfirmedCommand('regressify.updateLibrary', () => {
     let terminal = vscode.window.terminals.find((t) => t.name === 'Regressify');
     if (!terminal) {
       terminal = vscode.window.createTerminal('Regressify');
@@ -60,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
     terminal.show();
   });
 
-  const viewReportCommand = vscode.commands.registerCommand('regressify.viewReport', (uri: vscode.Uri) => {
+  const viewReportCommand = registerConfirmedCommand('regressify.viewReport', (uri: vscode.Uri) => {
     try {
       const testSuiteReportPath = getTestSuiteReportPath(uri);
       if (!testSuiteReportPath) {
@@ -83,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  const runTestCommand = vscode.commands.registerCommand('regressify.runTest', () => {
+  const runTestCommand = registerConfirmedCommand('regressify.runTest', () => {
     // Get the active editor
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -94,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
     executeRegressifyCommand('test', editor.document.uri);
   });
 
-  context.subscriptions.push(openCommand, refreshCommand, helloWorldCommand, referenceCommand, approveCommand, testCommand, viewReportCommand, updateCommand, runTestCommand, fileSystemWatcher('**/visual_tests/**/*.tests.{yaml,yml,json}', regressifyProvider.refresh), fileSystemWatcher('**/.backstop/**/html_report/index.html', regressifyProvider.refresh));
+  context.subscriptions.push(openCommand, refreshCommand, legacyRefreshCommand, helloWorldCommand, referenceCommand, approveCommand, testCommand, viewReportCommand, updateCommand, runTestCommand, fileSystemWatcher('**/visual_tests/**/*.tests.{yaml,yml,json}', regressifyProvider.refresh), fileSystemWatcher('**/.backstop/**/html_report/index.html', regressifyProvider.refresh));
 }
 
 // This method is called when your extension is deactivated
