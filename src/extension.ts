@@ -71,16 +71,6 @@ export function activate(context: vscode.ExtensionContext) {
     executeRegressifyCommand('test', uri);
   });
 
-  const updateCommand = registerConfirmedCommand('regressify.updateLibrary', () => {
-    let terminal = vscode.window.terminals.find((t) => t.name === 'Regressify');
-    if (!terminal) {
-      terminal = vscode.window.createTerminal('Regressify');
-    }
-
-    terminal.sendText(`npm i -g regressify && regressify version && regressify init`);
-    terminal.show();
-  });
-
   const viewReportCommand = registerConfirmedCommand('regressify.viewReport', (uri: vscode.Uri) => {
     try {
       const testSuiteReportPath = getTestSuiteReportPath(uri);
@@ -115,7 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
     executeRegressifyCommand('test', editor.document.uri);
   });
 
-  context.subscriptions.push(openCommand, refreshCommand, legacyRefreshCommand, helloWorldCommand, referenceCommand, approveCommand, testCommand, viewReportCommand, updateCommand, runTestCommand, fileSystemWatcher('**/visual_tests/**/*.tests.{yaml,yml,json}', regressifyProvider.refresh), fileSystemWatcher('**/.backstop/**/html_report/index.html', regressifyProvider.refresh));
+  context.subscriptions.push(openCommand, refreshCommand, legacyRefreshCommand, helloWorldCommand, referenceCommand, approveCommand, testCommand, viewReportCommand, runTestCommand, fileSystemWatcher('**/visual_tests/**/*.tests.{yaml,yml,json}', regressifyProvider.refresh), fileSystemWatcher('**/.backstop/**/html_report/index.html', regressifyProvider.refresh));
 }
 
 // This method is called when your extension is deactivated
